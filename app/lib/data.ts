@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { unstable_noStore as noStore } from 'next/cache';
 import {
   CustomerField,
   CustomersTable,
@@ -18,13 +19,13 @@ const pool = new Pool({
 export async function fetchRevenue() {
   // Add noStore() here prevent the response from being cached.
   // This is equivalent to in fetch(..., {cache: 'no-store'}).
-
+  noStore()
   try {
     // Artificially delay a reponse for demo purposes.
     // Don't do this in real life :)
 
     console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     const client = await pool.connect();
     const data = await client.query(`SELECT * FROM revenue`);
     // console.log('Data fetch complete after 3 seconds.');
@@ -37,6 +38,7 @@ export async function fetchRevenue() {
 }
 
 export async function fetchLatestInvoices() {
+  noStore()
   try {
     console.log('Fetching invoices data...');
     const client = await pool.connect();
@@ -60,6 +62,7 @@ export async function fetchLatestInvoices() {
 }
 
 export async function fetchCardData() {
+  noStore()
   try {
     const client = await pool.connect();
     // You can probably combine these into a single SQL query
@@ -101,7 +104,7 @@ export async function fetchFilteredInvoices(
   currentPage: number,
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
+  noStore()
   try {
     const client = await pool.connect();
     const invoices = await client.query(`
@@ -133,6 +136,7 @@ export async function fetchFilteredInvoices(
 }
 
 export async function fetchInvoicesPages(query: string) {
+  noStore()
   try {
     const client = await pool.connect();
     const count = await client.query(`SELECT COUNT(*)
@@ -155,6 +159,7 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
+  noStore()
   try {
     const client = await pool.connect();
     const data = await client.query(`
@@ -180,6 +185,7 @@ export async function fetchInvoiceById(id: string) {
 }
 
 export async function fetchCustomers() {
+  noStore()
   try {
     const client = await pool.connect();
     const data = await client.query(`
@@ -199,6 +205,7 @@ export async function fetchCustomers() {
 }
 
 export async function fetchFilteredCustomers(query: string) {
+  noStore()
   try {
     const client = await pool.connect();
     const data = await client.query(`
